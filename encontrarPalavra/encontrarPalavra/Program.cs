@@ -8,7 +8,7 @@ namespace encontrarPalavra
     {
         static void Main(string[] args)
         {
-            string [] nomes = {"Gabriel","Victor","Luiz","Tiago","Marcos"};
+            string [] nomes = {"gabriel","victor","luiz","tiago","marcos"};
             Pesquisa("Victor",nomes); 
         }
 
