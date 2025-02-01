@@ -9,7 +9,8 @@ namespace encontrarPalavra
         static void Main(string[] args)
         {
             string [] nomes = {"gabriel","victor","luiz","tiago","marcos"};
-            Pesquisa("Victor",nomes); 
+            Pesquisa("Victor",nomes);
+            Console.WriteLine("Teste");
         }
 
         public static Array Pesquisa(string palavra,string [] lista)
