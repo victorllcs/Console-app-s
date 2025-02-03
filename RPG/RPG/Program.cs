@@ -89,20 +89,20 @@ class Personagem
     }
     public string Name
     {
-        get {return nome;}
+        get {return nome ?? gerarNomeAleatorio(6);}
         set {nome=value;}
     }
     public string Origin
     {
-        get {return origem;}
+        get {return origem ?? "Floresta Sangrenta";}
         set {origem=value;}
     }
 
     //Propriedades do personagem
     private string classe = "Plebeu";
-    private string nome;
+    private string? nome; //Ao adicionar o ? na variável, ela vira nullnable, ou seja, não pode ser nula.
     //Serão dadas as opções de origem para os jogadores escolherem, como se fossem países diferentes
-    private string origem;
+    private string? origem;
 
     //O tipo de arma e armadura vai mudar de acordo com o personagem, e será criada uma classe para as armas ainda.
     private string tipoArma = "Pedaço de madeira";
@@ -194,6 +194,13 @@ class Personagem
         Range = newValue;
         return Range;
     }
+
+    public string gerarNomeAleatorio(int length) //Não está retornando uma string, conferir depois
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random random = new Random();
+        return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
+    }
 }
 
 class Mago:Personagem
@@ -213,6 +220,7 @@ class Mago:Personagem
     {
         Console.WriteLine($"Você foi teletransportado para longe da batalha, atual posição = {posicao}");
     }
+
     public void carregarMana()
     {
         Console.WriteLine("Carregando mana");
@@ -237,5 +245,46 @@ class Necromancer:Personagem
     public void invocarCriaturas(string criatura)
     {
         Console.WriteLine($"Você invocou: {criatura}");
+    }
+}
+
+class Program 
+{
+    public static void Main(string[] args)
+    {
+        //Cria um objeto
+        Personagem p1 = new Personagem();
+        //Começa a adicionar atributos específicos no objeto
+        Console.WriteLine("Escolha o nome do seu personagem:");
+        p1.Name= Console.ReadLine() ?? p1.gerarNomeAleatorio(6); //Não está retornando um nome aleatório, verificar esse método depois.
+        escolhaReino://Label de retorno para o default do switch
+        Console.WriteLine("Escolha o reino do seu personagem!");
+        Console.WriteLine("A- Cidade das Feras \n B- Cidade dos Dragões \n C-Floresta Sangrenta \n D- Colina de Ossos \n E - Vales Nevados");
+        p1.Origin = Console.ReadLine() ?? " "; //?? é um operador de coalescência nula, que nesse caso coloca "" na string caso o valor do usuário seja null
+        switch (p1.Origin)
+        {
+            case "A":
+                p1.Origin = "Cidade das feras";
+            break;
+            case "B":
+                p1.Origin = "Cidade dos dragões";
+            break;
+            case "C":
+                p1.Origin = "Floresta Sangrenta";
+            break;
+            case "D":
+                p1.Origin = "Colina de Ossos";
+            break;
+            case "E":
+                p1.Origin = "Vales Nevados";
+            break;
+            default:
+                Console.WriteLine("A opção selecionada é inválida");
+                Console.WriteLine("==============================");
+                goto escolhaReino; //Referencia a label para o código retornar.
+        }
+        Console.WriteLine(p1.Name);
+        Console.WriteLine(p1.Origin);
+        
     }
 }
