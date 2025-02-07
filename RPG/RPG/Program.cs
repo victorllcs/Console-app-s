@@ -2,6 +2,7 @@
 using System.Numerics;
 using System.Runtime;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization;
 using System.Security.Cryptography.X509Certificates;
 
 class Personagem
@@ -107,7 +108,7 @@ class Personagem
     //O tipo de arma e armadura vai mudar de acordo com o personagem, e será criada uma classe para as armas ainda.
     private string tipoArma = "Pedaço de madeira";
     private string tipoArmadura = "Couraças de couro leve";
-    private double danoRecebido;
+    private int danoRecebido;
 
     public void atacar(string alvo)
     {
@@ -131,8 +132,10 @@ class Personagem
     }
     public void defender()
     {
-        double danoTotal = danoRecebido*(20/100);
-        double danoFinal = danoRecebido-danoTotal;
+        int danoTotal = danoRecebido*(20/100);
+        int danoFinal = danoRecebido-danoTotal;
+        danoRecebido = danoFinal;
+        HP = HP-danoRecebido;
         Console.WriteLine($"Defendeu, dano recebido = {danoFinal}");
     }
     public void bradar()
@@ -195,40 +198,60 @@ class Personagem
         return Range;
     }
 
-    public string gerarNomeAleatorio(int length) //Não está retornando uma string, conferir depois
+    private static readonly Random random = new Random();
+    public string gerarNomeAleatorio(int length) 
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        Random random = new Random();
         return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
     }
 }
+    //Classe mágicos que herda a classe personagem, essa classe vai ser uma superclase para mago, necromancer e curandeiro
+    class Magicos:Personagem
+    {
+        private int magia = 10;
 
+        public int Magic
+        {
+            get{return magia;}
+            set{magia=value;}
+        }
+
+        //As classes mágicas terão um aumento de mana de 100 para 200 (Método compartilhado)
+        public void aumentarMana()
+        {
+            Console.WriteLine("Carregando mana");
+            while(Mana<200)
+            {
+                Mana++;
+                Console.WriteLine(Mana);
+            } 
+        }
+        public void dispararHabilidade(string habilidade)
+        {
+            Console.WriteLine($"Disparando {habilidade}");
+        }
+    }
+    //Classe furtivos que herda a classe personagem, essa classe vai ser uma superclasse para assasino e ninja
+    class Furtivos:Personagem
+    {
+
+    }
+    //Classe humanos que herda personagem e vai ser herdada por guerreiro, paladino e arqueiro
+    class Humanos:Personagem
+    {
+
+    }
 class Mago:Personagem
 {
-    int magia;
-    
-    //As classes mágicas terão um aumento de mana de 100 para 200
-    public void dispararHabilidade(string habilidade)
-    {
-        Console.WriteLine($"Disparando {habilidade}");
-    }
+    //Método exclusivo
     public void levitar()
     {
         Console.WriteLine("Levitação");
     }
+    //Método exclusivo
     public void teletransportar(Random posicao)
     {
         Console.WriteLine($"Você foi teletransportado para longe da batalha, atual posição = {posicao}");
-    }
-
-    public void carregarMana()
-    {
-        Console.WriteLine("Carregando mana");
-        while(Mana<200)
-        {
-            Mana++;
-            Console.WriteLine(Mana);
-        } 
     }
 }
 
@@ -256,7 +279,9 @@ class Program
         Personagem p1 = new Personagem();
         //Começa a adicionar atributos específicos no objeto
         Console.WriteLine("Escolha o nome do seu personagem:");
-        p1.Name= Console.ReadLine() ?? p1.gerarNomeAleatorio(6); //Não está retornando um nome aleatório, verificar esse método depois.
+        p1.Name = Console.ReadLine() ?? "";
+        if(string.IsNullOrEmpty(p1.Name))
+            p1.Name = p1.gerarNomeAleatorio(6);
         escolhaReino://Label de retorno para o default do switch
         Console.WriteLine("Escolha o reino do seu personagem!");
         Console.WriteLine("A- Cidade das Feras \n B- Cidade dos Dragões \n C-Floresta Sangrenta \n D- Colina de Ossos \n E - Vales Nevados");
