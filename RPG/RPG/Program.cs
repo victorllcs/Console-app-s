@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.Contracts;
 using System.Numerics;
+using System.Reflection.Metadata;
 using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
@@ -7,7 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 
 class Personagem
 {
-     /*Todo personagem vai vir padrão com uma certa quantidade de cada ponto, a quantidade será alterada de acordo com a classe*/
+    /*Todo personagem vai vir padrão com uma certa quantidade de cada ponto, a quantidade será alterada de acordo com a classe*/
 
     //Atributos do personagem
     private int hp = 100;
@@ -19,84 +20,84 @@ class Personagem
     private int alcance = 5;
     private int nivel = 1;
     private int destreza = 5;
-    private double experiencia=50; //A cada vez que o nível subir em 1, a experiência necessária para subir de nível será multiplicada por 2
-    
+    private double experiencia = 50; //A cada vez que o nível subir em 1, a experiência necessária para subir de nível será multiplicada por 2
+
     //Controladores de acesso para os atributos privados
     public int HP
     {
-        get {return hp;} //Obtem o valor do hp
-        set {hp=value;} //Modifica o valor do hp
+        get { return hp; } //Obtem o valor do hp
+        set { hp = value; } //Modifica o valor do hp
     }
     public int Mana
-    {   
-        get {return mana;}
-        set {mana=value;}
+    {
+        get { return mana; }
+        set { mana = value; }
     }
     public int Atack
     {
-        get {return ataque;}
-        set {ataque=value;}
+        get { return ataque; }
+        set { ataque = value; }
     }
     public int Defense
     {
-        get {return defesa;}
-        set {defesa=value;}
+        get { return defesa; }
+        set { defesa = value; }
     }
     public int Speed
     {
-        get {return velocidade;}
-        set {velocidade=value;}
+        get { return velocidade; }
+        set { velocidade = value; }
     }
     public int Inteligence
     {
-        get {return inteligencia;}
-        set {inteligencia=value;}
+        get { return inteligencia; }
+        set { inteligencia = value; }
     }
     public int Range
     {
-        get {return alcance;}
-        set {alcance=value;}
+        get { return alcance; }
+        set { alcance = value; }
     }
     public int Level
     {
-        get {return nivel;}
-        set {nivel=value;}
+        get { return nivel; }
+        set { nivel = value; }
     }
     public double Exp
     {
-        get {return experiencia;}
-        set {experiencia=value;}
+        get { return experiencia; }
+        set { experiencia = value; }
     }
 
     public string weaponType
     {
-        get {return tipoArma;}
-        set {tipoArma=value;}
+        get { return tipoArma; }
+        set { tipoArma = value; }
     }
     public string armorType
     {
-        get {return tipoArmadura;}
-        set {tipoArmadura=value;}
+        get { return tipoArmadura; }
+        set { tipoArmadura = value; }
     }
     public int Dex
     {
-        get {return destreza;}
-        set {destreza=value;}
+        get { return destreza; }
+        set { destreza = value; }
     }
     public string characterClass
     {
-        get {return classe;}
-        set {classe=value;}
+        get { return classe; }
+        set { classe = value; }
     }
     public string Name
     {
-        get {return nome ?? gerarNomeAleatorio(6);}
-        set {nome=value;}
+        get { return nome ?? gerarNomeAleatorio(6); }
+        set { nome = value; }
     }
     public string Origin
     {
-        get {return origem ?? "Floresta Sangrenta";}
-        set {origem=value;}
+        get { return origem ?? "Floresta Sangrenta"; }
+        set { origem = value; }
     }
 
     //Propriedades do personagem
@@ -120,7 +121,7 @@ class Personagem
     }
     public void correr()
     {
-        Console.WriteLine($"Correndo, velocidade = {velocidade*0,3}");
+        Console.WriteLine($"Correndo, velocidade = {velocidade * 0,3}");
     }
     public void pular()
     {
@@ -132,10 +133,10 @@ class Personagem
     }
     public void defender()
     {
-        int danoTotal = danoRecebido*(20/100);
-        int danoFinal = danoRecebido-danoTotal;
+        int danoTotal = danoRecebido * (20 / 100);
+        int danoFinal = danoRecebido - danoTotal;
         danoRecebido = danoFinal;
-        HP = HP-danoRecebido;
+        HP = HP - danoRecebido;
         Console.WriteLine($"Defendeu, dano recebido = {danoFinal}");
     }
     public void bradar()
@@ -144,26 +145,26 @@ class Personagem
     }
 
 
-    public double completarMissao(bool missaoConcluida,int quantidadeXp)
+    public double completarMissao(bool missaoConcluida, int quantidadeXp)
     {
-        if(missaoConcluida==true)
-            Exp=quantidadeXp;
-        
+        if (missaoConcluida == true)
+            Exp = quantidadeXp;
+
         return Exp;
     }
     //Métodos para modificar os atritubos do personagem, todos eles serão utilizados de acordo com as classes
     public int subirNivel()
     {
-        if(Level==Level+1)
+        if (Level == Level + 1)
         {
-            Exp*=2;
+            Exp *= 2;
             Level++;
         }
         return Level;
     }
 
     public int modificarMana(int newValue)
-    {   
+    {
         Mana = newValue;
         return Mana;
     }
@@ -199,79 +200,137 @@ class Personagem
     }
 
     private static readonly Random random = new Random();
-    public string gerarNomeAleatorio(int length) 
+    public string gerarNomeAleatorio(int length)
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
     }
 }
-    //Classe mágicos que herda a classe personagem, essa classe vai ser uma superclase para mago, necromancer e curandeiro
-    class Magicos:Personagem
-    {
-        private int magia = 10;
-
-        public int Magic
-        {
-            get{return magia;}
-            set{magia=value;}
-        }
-
-        //As classes mágicas terão um aumento de mana de 100 para 200 (Método compartilhado)
-        public void aumentarMana()
-        {
-            Console.WriteLine("Carregando mana");
-            while(Mana<200)
-            {
-                Mana++;
-                Console.WriteLine(Mana);
-            } 
-        }
-        public void dispararHabilidade(string habilidade)
-        {
-            Console.WriteLine($"Disparando {habilidade}");
-        }
-    }
-    //Classe furtivos que herda a classe personagem, essa classe vai ser uma superclasse para assasino e ninja
-    class Furtivos:Personagem
-    {
-
-    }
-    //Classe humanos que herda personagem e vai ser herdada por guerreiro, paladino e arqueiro
-    class Humanos:Personagem
-    {
-
-    }
-class Mago:Personagem
+//Classe mágicos que herda a classe personagem, essa classe vai ser uma superclase para mago, necromancer e curandeiro
+class Magicos : Personagem
 {
-    //Método exclusivo
+    private int magia = 10;
+
+    public int Magic
+    {
+        get { return magia; }
+        set { magia = value; }
+    }
+
+    public void aumentarMana()
+    {
+        Console.WriteLine("Carregando mana");
+        while (Mana < 200)
+        {
+            Mana++;
+            Console.WriteLine(Mana);
+        }
+    }
+    public virtual void usarHabilidade(string habilidade)
+    {
+        Console.WriteLine($"Disparando {habilidade}");
+    }
+}
+//Classe furtivos que herda a classe personagem, essa classe vai ser uma superclasse para assasino e ninja
+class Furtivos : Personagem
+{
+    private int furtividade;
+    public int Stealth
+    {
+        get{return furtividade;}
+        set{furtividade=value;}
+    }
+    public virtual void camuflar()
+    {
+        Console.WriteLine("Cada personagem se camufla de um jeito diferente");
+    }
+}
+//Classe humanos que herda personagem e vai ser herdada por guerreiro, paladino e arqueiro
+class Humanos : Personagem
+{
+    private int agressividade = 10;
+
+    public int Fury
+    {
+        get{return agressividade;}
+        set{agressividade=value;}
+    }
+
+
+}
+//Criação dos personagens de acordo com as suas classes
+
+// Classe dos mágicos
+class Mago : Magicos
+{
     public void levitar()
     {
         Console.WriteLine("Levitação");
     }
-    //Método exclusivo
     public void teletransportar(Random posicao)
     {
         Console.WriteLine($"Você foi teletransportado para longe da batalha, atual posição = {posicao}");
     }
+    //Método da classe mágica sobreescrito
+    public override void usarHabilidade(string habilidade)
+    {
+        Console.WriteLine($"O mago atira sua {habilidade}");
+    }
 }
-
-class Necromancer:Personagem
+class Necromancer : Magicos
 {
-    int trevas,invocacao;
+    int trevas;
 
     public void invocarTrevas()
     {
         Console.WriteLine("O poder das trevas foi invocado.");
-        trevas = trevas+(trevas*15/100);
+        trevas = trevas + (trevas * 15 / 100);
         Console.WriteLine($"Atributo Trevas foi aumentado em 15%: {trevas}");
     }
-    public void invocarCriaturas(string criatura)
+    public override void usarHabilidade(string habilidade)
     {
-        Console.WriteLine($"Você invocou: {criatura}");
+        Console.WriteLine("Criaturas das trevas invocadas");
     }
 }
+class Curandeiro:Magicos
+{
+    int poderCura;
+    public void ressucitar(string alvo)
+    {
+        Console.WriteLine($"Você ressucitou {alvo}");
+    }
+    public override void usarHabilidade(string habilidade)
+    {
+        Console.WriteLine($"Você acaba de curar um aliado utilizando: {habilidade}");
+    }
+}
+//Classe dos Humanos
+class Paladino:Humanos
+{
+    private int fe,devocao;
 
-class Program 
+    public int Faith
+    {
+        get{return fe;}
+        set{fe=value;}
+    }
+    public int Devocion
+    {
+        get{return devocao;}
+        set{devocao=value;}
+    }
+    public void orar() //Arrumar um jeito dessa modificação de atributos ir para todo mundo perto.
+    {
+        Faith = Faith +(Faith * 40/100);
+        Fury = Fury + (Fury*40/100);
+        Speed = Speed + (Speed*40/100);
+        Atack = Atack + (Atack*40/100);
+        Defense = Defense + (Defense*40/100);
+        Dex = Dex + (Dex*40/100);
+        Console.WriteLine("Todos os atributos do time foram buffados em 40%");
+    }
+}
+class Program
 {
     public static void Main(string[] args)
     {
@@ -280,7 +339,7 @@ class Program
         //Começa a adicionar atributos específicos no objeto
         Console.WriteLine("Escolha o nome do seu personagem:");
         p1.Name = Console.ReadLine() ?? "";
-        if(string.IsNullOrEmpty(p1.Name))
+        if (string.IsNullOrEmpty(p1.Name))
             p1.Name = p1.gerarNomeAleatorio(6);
         escolhaReino://Label de retorno para o default do switch
         Console.WriteLine("Escolha o reino do seu personagem!");
@@ -290,19 +349,19 @@ class Program
         {
             case "A":
                 p1.Origin = "Cidade das feras";
-            break;
+                break;
             case "B":
                 p1.Origin = "Cidade dos dragões";
-            break;
+                break;
             case "C":
                 p1.Origin = "Floresta Sangrenta";
-            break;
+                break;
             case "D":
                 p1.Origin = "Colina de Ossos";
-            break;
+                break;
             case "E":
                 p1.Origin = "Vales Nevados";
-            break;
+                break;
             default:
                 Console.WriteLine("A opção selecionada é inválida");
                 Console.WriteLine("==============================");
@@ -310,6 +369,6 @@ class Program
         }
         Console.WriteLine(p1.Name);
         Console.WriteLine(p1.Origin);
-        
+
     }
 }
