@@ -205,6 +205,10 @@ class Personagem
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
     }
+        public virtual void usarHabilidade()
+    {
+        Console.WriteLine($"Disparando");
+    }
 }
 //Classe mágicos que herda a classe personagem, essa classe vai ser uma superclase para mago, necromancer e curandeiro
 class Magicos : Personagem
@@ -225,10 +229,6 @@ class Magicos : Personagem
             Mana++;
             Console.WriteLine(Mana);
         }
-    }
-    public virtual void usarHabilidade(string habilidade)
-    {
-        Console.WriteLine($"Disparando {habilidade}");
     }
 }
 //Classe furtivos que herda a classe personagem, essa classe vai ser uma superclasse para assasino e ninja
@@ -254,9 +254,7 @@ class Humanos : Personagem
     {
         get{return agressividade;}
         set{agressividade=value;}
-    }
-
-
+    }   
 }
 //Criação dos personagens de acordo com as suas classes
 
@@ -272,9 +270,9 @@ class Mago : Magicos
         Console.WriteLine($"Você foi teletransportado para longe da batalha, atual posição = {posicao}");
     }
     //Método da classe mágica sobreescrito
-    public override void usarHabilidade(string habilidade)
+    public override void usarHabilidade()
     {
-        Console.WriteLine($"O mago atira sua {habilidade}");
+        Console.WriteLine($"Atirando bola de fogo");
     }
 }
 class Necromancer : Magicos
@@ -287,7 +285,7 @@ class Necromancer : Magicos
         trevas = trevas + (trevas * 15 / 100);
         Console.WriteLine($"Atributo Trevas foi aumentado em 15%: {trevas}");
     }
-    public override void usarHabilidade(string habilidade)
+    public override void usarHabilidade()
     {
         Console.WriteLine("Criaturas das trevas invocadas");
     }
@@ -299,9 +297,9 @@ class Curandeiro:Magicos
     {
         Console.WriteLine($"Você ressucitou {alvo}");
     }
-    public override void usarHabilidade(string habilidade)
+    public override void usarHabilidade()
     {
-        Console.WriteLine($"Você acaba de curar um aliado utilizando: {habilidade}");
+        Console.WriteLine($"Você acaba de curar um aliado");
     }
 }
 //Classe dos Humanos
@@ -330,6 +328,49 @@ class Paladino:Humanos
         Console.WriteLine("Todos os atributos do time foram buffados em 40%");
     }
 }
+class Arqueiro:Humanos
+{
+    private int visaoAguia = 10; //Propriedade particular do arqueiro
+    public int eagleVision
+    {
+        get{return visaoAguia;}
+        set{visaoAguia=value;}
+    }
+    public override void usarHabilidade()
+    {
+        Console.WriteLine("Rolar");
+    }
+    private void atirar()
+    {
+        Console.WriteLine("Atirando flechas");
+    }
+}
+class Guerreiro:Humanos
+{
+    private int forca = 10;
+    public int Strength
+    {
+        get{return forca;}
+        set{forca=value;}
+    }
+    public override void usarHabilidade()
+    {
+        Console.WriteLine("Ativar Fúria");
+        Speed = Speed + (Speed*30/100);
+        Atack = Atack + (Atack*30/100);
+        Strength = Strength + (Strength*30/100);
+    }
+}
+class Assasino:Furtivos
+{
+    //Criar a classe
+}
+
+class Ninja:Furtivos
+{
+    //Criar a classe
+}
+
 class Program
 {
     public static void Main(string[] args)
