@@ -5,7 +5,7 @@ using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Security.Cryptography.X509Certificates;
-
+//Classes referentes aos personagens.
 class Personagem
 {
     /*Todo personagem vai vir padrão com uma certa quantidade de cada ponto, a quantidade será alterada de acordo com a classe*/
@@ -363,12 +363,48 @@ class Guerreiro:Humanos
 }
 class Assasino:Furtivos
 {
-    //Criar a classe
+    private int insanidade = 10;
+    public int Insanity
+    {
+        get{return insanidade;}
+        set{insanidade=value;}
+    }
+
+    public override void usarHabilidade()
+    {
+        Console.WriteLine("Furtivamente, o alvo foi assasinado.");  
+    }
+    public override void camuflar()
+    {
+        Console.WriteLine("O assasino utiliza as suas habilidades para se aglomerar no meio do público");
+    }
 }
 
 class Ninja:Furtivos
 {
-    //Criar a classe
+    public override void camuflar()
+    {
+        Console.WriteLine("O ninja se camufla no ambiente");
+    }
+    public void escalar()
+    {
+        Console.WriteLine("Escalando...");
+    }
+    public override void usarHabilidade()
+    {
+        Console.WriteLine("Passo Silencioso utilizado");
+    }
+}
+//A partir daqui, serão criadas as classes referentes as armas do jogo.
+class Armas
+{
+    //em construção, é necessário criar o diagrama de classes antes de começar a estruturar essa classe.
+    private string tipo;
+    private int danoPrincipal;
+    private string classePersonagem;
+    private int velocidadeAtk;
+    private int nivelNecessario;
+    
 }
 
 class Program
