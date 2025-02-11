@@ -205,9 +205,25 @@ class Personagem
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
     }
-        public virtual void usarHabilidade()
+    //Método de utilizar habilidades
+        public virtual void usarHabilidade(int custo)
     {
         Console.WriteLine($"Disparando");
+    }
+
+    //Método de validação para verificar se o personagem pode usar a habilidade baseado na quantidade de mana 
+    public bool podeUsarHabilidade(int custo)
+    {
+        if(Mana >= custo)
+        {
+            Mana-= custo;
+            return true;
+        }
+        else
+        {
+            Console.WriteLine("Não foi possível utilizar a habilidade, mana insuficiente.");
+            return false;
+        }
     }
 }
 //Classe mágicos que herda a classe personagem, essa classe vai ser uma superclase para mago, necromancer e curandeiro
@@ -240,8 +256,10 @@ class Furtivos : Personagem
         get{return furtividade;}
         set{furtividade=value;}
     }
-    public virtual void camuflar()
+    public virtual void camuflar(int custo)
     {
+        if(!podeUsarHabilidade(custo))return;
+
         Console.WriteLine("Cada personagem se camufla de um jeito diferente");
     }
 }
@@ -261,45 +279,69 @@ class Humanos : Personagem
 // Classe dos mágicos
 class Mago : Magicos
 {
-    public void levitar()
+    public void levitar(int custo)
     {
+        if(!podeUsarHabilidade(custo))return;
+        
         Console.WriteLine("Levitação");
+        Mana -= custo;
     }
-    public void teletransportar(Random posicao)
+
+    public void teletransportar(Random posicao,int custo)
     {
+        if(!podeUsarHabilidade(custo))return;
+
         Console.WriteLine($"Você foi teletransportado para longe da batalha, atual posição = {posicao}");
+        Mana -= custo;
     }
     //Método da classe mágica sobreescrito
-    public override void usarHabilidade()
+    public override void usarHabilidade(int custo)
     {
+        if(!podeUsarHabilidade(custo))return;
+        
         Console.WriteLine($"Atirando bola de fogo");
+        Mana -= custo;
+        
     }
 }
 class Necromancer : Magicos
 {
     int trevas;
 
-    public void invocarTrevas()
+    public void invocarTrevas(int custo)
     {
+        if(!podeUsarHabilidade(custo))return;
+        
         Console.WriteLine("O poder das trevas foi invocado.");
         trevas = trevas + (trevas * 15 / 100);
         Console.WriteLine($"Atributo Trevas foi aumentado em 15%: {trevas}");
+        Mana -= custo;
     }
-    public override void usarHabilidade()
+    public override void usarHabilidade(int custo)
     {
+        if(!podeUsarHabilidade(custo)) return;
+        
         Console.WriteLine("Criaturas das trevas invocadas");
+        Mana -=custo;
+        
     }
 }
 class Curandeiro:Magicos
 {
     int poderCura;
-    public void ressucitar(string alvo)
+    public void ressucitar(string alvo,int custo)
     {
+        if(!podeUsarHabilidade(custo))return;
+
         Console.WriteLine($"Você ressucitou {alvo}");
+        Mana -= custo;
     }
-    public override void usarHabilidade()
+    public override void usarHabilidade(int custo)
     {
+        if(!podeUsarHabilidade(custo))return;
+
         Console.WriteLine($"Você acaba de curar um aliado");
+        Mana -= custo;
     }
 }
 //Classe dos Humanos
@@ -317,8 +359,10 @@ class Paladino:Humanos
         get{return devocao;}
         set{devocao=value;}
     }
-    public void orar() //Arrumar um jeito dessa modificação de atributos ir para todo mundo perto.
+    public void orar(int custo) //Arrumar um jeito dessa modificação de atributos ir para todo mundo perto.
     {
+        if(!podeUsarHabilidade(custo))return;
+        
         Faith = Faith +(Faith * 40/100);
         Fury = Fury + (Fury*40/100);
         Speed = Speed + (Speed*40/100);
@@ -326,6 +370,7 @@ class Paladino:Humanos
         Defense = Defense + (Defense*40/100);
         Dex = Dex + (Dex*40/100);
         Console.WriteLine("Todos os atributos do time foram buffados em 40%");
+        Mana -= custo;
     }
 }
 class Arqueiro:Humanos
@@ -336,9 +381,12 @@ class Arqueiro:Humanos
         get{return visaoAguia;}
         set{visaoAguia=value;}
     }
-    public override void usarHabilidade()
+    public override void usarHabilidade(int custo)
     {
+        if(!podeUsarHabilidade(custo))return;
+        
         Console.WriteLine("Rolar");
+        Mana -= custo;
     }
     private void atirar()
     {
@@ -353,12 +401,15 @@ class Guerreiro:Humanos
         get{return forca;}
         set{forca=value;}
     }
-    public override void usarHabilidade()
+    public override void usarHabilidade(int custo)
     {
+        if(!podeUsarHabilidade(custo))return;
+
         Console.WriteLine("Ativar Fúria");
         Speed = Speed + (Speed*30/100);
         Atack = Atack + (Atack*30/100);
         Strength = Strength + (Strength*30/100);
+        Mana -= custo;
     }
 }
 class Assasino:Furtivos
@@ -370,29 +421,44 @@ class Assasino:Furtivos
         set{insanidade=value;}
     }
 
-    public override void usarHabilidade()
-    {
-        Console.WriteLine("Furtivamente, o alvo foi assasinado.");  
+    public override void usarHabilidade(int custo)
+    {   
+        if(!podeUsarHabilidade(custo))return;
+
+        Console.WriteLine("Furtivamente, o alvo foi assasinado.");
+        Mana -= custo;  
     }
-    public override void camuflar()
+    public override void camuflar(int custo)
     {
+        if(!podeUsarHabilidade(custo))return;
+
         Console.WriteLine("O assasino utiliza as suas habilidades para se aglomerar no meio do público");
+        Mana -= custo;
     }
 }
 
 class Ninja:Furtivos
 {
-    public override void camuflar()
+    public override void camuflar(int custo)
     {
+        if(!podeUsarHabilidade(custo))return;
+
         Console.WriteLine("O ninja se camufla no ambiente");
+        Mana -= custo;
     }
-    public void escalar()
+    public void escalar(int custo)
     {
+        if(!podeUsarHabilidade(custo))return;
+
         Console.WriteLine("Escalando...");
+        Mana -= custo;
     }
-    public override void usarHabilidade()
-    {
+    public override void usarHabilidade(int custo)
+    {   
+        if(!podeUsarHabilidade(custo))return;
+
         Console.WriteLine("Passo Silencioso utilizado");
+        Mana -= custo;
     }
 }
 //A partir daqui, serão criadas as classes referentes as armas do jogo.
