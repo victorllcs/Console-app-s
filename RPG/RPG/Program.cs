@@ -21,7 +21,7 @@ class Personagem
     private int nivel = 1;
     private int destreza = 5;
     private double experiencia = 50; //A cada vez que o nível subir em 1, a experiência necessária para subir de nível será multiplicada por 2
-
+    private double expNecessaria = 50;
     //Controladores de acesso para os atributos privados
     public int HP
     {
@@ -84,7 +84,7 @@ class Personagem
         get { return destreza; }
         set { destreza = value; }
     }
-    public string characterClass
+    public Personagem characterClass
     {
         get { return classe; }
         set { classe = value; }
@@ -99,9 +99,14 @@ class Personagem
         get { return origem ?? "Floresta Sangrenta"; }
         set { origem = value; }
     }
+    public double NecessaryXP
+    {
+        get { return expNecessaria; } //Obtem o valor do hp
+        set { expNecessaria = value; } //Modifica o valor do hp
+    }
 
     //Propriedades do personagem
-    private string classe = "Plebeu";
+    private Personagem classe =new Plebeu();
     private string? nome; //Ao adicionar o ? na variável, ela vira nullnable, ou seja, não pode ser nula.
     //Serão dadas as opções de origem para os jogadores escolherem, como se fossem países diferentes
     private string? origem;
@@ -155,10 +160,10 @@ class Personagem
     //Métodos para modificar os atritubos do personagem, todos eles serão utilizados de acordo com as classes
     public int subirNivel()
     {
-        if (Level == Level + 1)
+        if(Exp >= NecessaryXP)
         {
-            Exp *= 2;
             Level++;
+            NecessaryXP *= 2;
         }
         return Level;
     }
@@ -225,6 +230,10 @@ class Personagem
             return false;
         }
     }
+}
+class Plebeu:Personagem
+{
+    //por enquanto n tem nada
 }
 //Classe mágicos que herda a classe personagem, essa classe vai ser uma superclase para mago, necromancer e curandeiro
 class Magicos : Personagem
@@ -470,7 +479,35 @@ class Armas
     private string classePersonagem;
     private int velocidadeAtk;
     private int nivelNecessario;
-    
+
+    public int principalDamage
+    {
+        get{return danoPrincipal;}
+        set{danoPrincipal = value;}
+    }
+    public int atkSpeed
+    {
+        get{return velocidadeAtk;}
+        set{velocidadeAtk = value;}
+    }
+    public int Level
+    {
+        get{return nivelNecessario;}
+        set{nivelNecessario = value;}
+    }
+
+    public bool equiparArma(int nivel,string classe)
+    {
+        if(nivel>=nivelNecessario && validarClasse(classe))
+            return true;
+        return false;
+    }
+
+    public bool validarClasse(string classe)
+    {
+        return classe==classePersonagem; //A expressão de comparação já retorna um valor True ou False!!
+    }
+
 }
 
 class Program
@@ -510,8 +547,38 @@ class Program
                 Console.WriteLine("==============================");
                 goto escolhaReino; //Referencia a label para o código retornar.
         }
-        Console.WriteLine(p1.Name);
-        Console.WriteLine(p1.Origin);
-
+        if(p1.Level == 10)
+        {
+            Console.WriteLine("Escolha a classe do seu personagem:");
+            Console.WriteLine("Mágicos: A-Mago\n B-Necromancer\n C-Curandeiro\n Furtivos: D- Assasino\n E-Ninja\n Humanos: F-Paladino\n G- Guerreiro \n H-Arqueiro");
+            string escolha = Console.ReadLine()?.ToUpper() ?? " ";
+            switch(escolha)
+            {
+                case "A":
+                    p1.characterClass = new Mago();
+                break;
+                case "B":
+                    p1.characterClass = new Necromancer();
+                break;
+                case "C":   
+                    p1.characterClass = new Curandeiro();
+                break;
+                case "D":
+                    p1.characterClass = new Assasino();
+                break;
+                case "E":
+                    p1.characterClass = new Ninja();
+                break;
+                case "F":
+                    p1.characterClass = new Paladino();
+                break;
+                case "G":
+                    p1.characterClass = new Guerreiro();
+                break;
+                case "H":
+                    p1.characterClass = new Arqueiro();
+                break;
+            }
+        }       
     }
 }
